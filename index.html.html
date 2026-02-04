@@ -1,0 +1,1822 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="color-scheme" content="light" />
+  <title>Meble Z Pałacu | Wypożyczalnia mebli antycznych</title>
+
+  <style>
+    :root{
+      --bg: #fbf8f2;
+      --bg2:#fffdf9;
+      --ink:#1d1a16;
+      --muted:#6a6258;
+      --line: rgba(160,135,70,.35);
+      --line2: rgba(160,135,70,.20);
+      --gold:#b18a2f;
+      --gold2:#d2b063;
+      --shadow: 0 18px 55px rgba(35,25,10,.14);
+      --shadow2: 0 10px 30px rgba(35,25,10,.10);
+      --radius: 18px;
+      --radius2: 26px;
+      --max: 1320px;
+      --serif: ui-serif, "Georgia", "Times New Roman", Times, serif;
+      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif;
+
+      /* Tło antycznego salonu. Możesz podmienić url na własne zdjęcie. */
+      --home-bg: var(--home-bg-data);
+      --about-feature-bg: var(--about-bg-data);
+    }
+
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
+    body{
+      margin:0;
+      background:
+        radial-gradient(1200px 600px at 20% -10%, rgba(210,176,99,.18), transparent 60%),
+        radial-gradient(900px 500px at 85% 10%, rgba(177,138,47,.12), transparent 65%),
+        linear-gradient(180deg, var(--bg) 0%, var(--bg2) 60%, #ffffff 100%);
+      color:var(--ink);
+      font-family: var(--sans);
+      letter-spacing:.1px;
+    }
+
+    /* Subtelna faktura papieru */
+    body:before{
+      content:"";
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      opacity:.045;
+      background-image:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)' opacity='.65'/%3E%3C/svg%3E");
+      mix-blend-mode:multiply;
+    }
+
+    a{ color:inherit; text-decoration:none; }
+    .container{ max-width:var(--max); margin:0 auto; padding:0 18px; }
+
+    /* Top bar */
+    .topbar{
+      position:sticky;
+      top:0;
+      z-index:30;
+      backdrop-filter: blur(10px);
+      background: rgba(255,253,249,.78);
+      border-bottom:1px solid var(--line2);
+    }
+    .topbar .wrap{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:14px;
+      padding:10px 0;
+    }
+    .nav{
+      display:flex;
+      gap:8px;
+      align-items:center;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+    .nav a{
+      padding:10px 12px;
+      border-radius:999px;
+      border:1px solid transparent;
+      color:var(--muted);
+      font-weight:600;
+      font-size:14px;
+      transition: .2s ease;
+    }
+    .nav a:hover{
+      color:var(--ink);
+      border-color: var(--line2);
+      background: rgba(255,255,255,.7);
+      box-shadow: var(--shadow2);
+    }
+    .nav a.active{
+      color:var(--ink);
+      border-color: var(--line);
+      background: linear-gradient(180deg, rgba(255,255,255,.9), rgba(255,255,255,.6));
+    }
+
+    /* Dyskretna ikonka admin */
+    .admin-trigger{
+      margin-left:6px;
+      width:34px;
+      height:34px;
+      border-radius:999px;
+      border:1px solid transparent;
+      background: transparent;
+      display:grid;
+      place-items:center;
+      cursor:pointer;
+      opacity:.18;
+      transition:.2s ease;
+    }
+    .admin-trigger:hover{
+      opacity:.85;
+      border-color: var(--line2);
+      background: rgba(255,255,255,.65);
+    }
+    .admin-trigger svg{ width:18px; height:18px; }
+
+    /* Logo */
+    .logo{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      min-width: 220px;
+    }
+    .logoMark{
+      width:40px;height:40px;
+      border-radius:50%;
+      border:1px solid var(--line);
+      background:
+        radial-gradient(circle at 30% 25%, rgba(210,176,99,.55), transparent 45%),
+        radial-gradient(circle at 70% 80%, rgba(177,138,47,.35), transparent 50%),
+        linear-gradient(180deg, #ffffff, #f6efe3);
+      box-shadow: var(--shadow2);
+      display:grid;
+      place-items:center;
+    }
+    .logoMark svg{ width:20px;height:20px; opacity:.9; }
+    .logoText{ line-height:1.05; }
+    .logoText .brand{
+      font-family: var(--serif);
+      font-size:18px;
+      font-weight:700;
+      letter-spacing:.4px;
+    }
+    .logoText .sub{
+      font-size:12px;
+      color:var(--muted);
+      font-weight:600;
+    }
+
+    /* Page sections */
+    main{ min-height: calc(100vh - 60px); }
+    .page{
+      display:none;
+      padding: 26px 0 70px;
+    }
+    .page.active{ display:block; }
+
+    /* HOME full screen */
+    .homeStage{
+      position:relative;
+      min-height: calc(100vh - 62px);
+      border-radius: var(--radius2);
+      overflow:hidden;
+      border: 1px solid var(--line2);
+      box-shadow: var(--shadow);
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.06)),
+        var(--home-bg);
+      background-size: cover;
+      background-position: center;
+    }
+    .homeStage:before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:
+        radial-gradient(900px 680px at 22% 38%, rgba(255,255,255,.78), transparent 62%),
+        radial-gradient(900px 680px at 80% 40%, rgba(255,255,255,.40), transparent 68%),
+        linear-gradient(90deg, rgba(255,255,255,.55), rgba(255,255,255,.10));
+      pointer-events:none;
+    }
+    .homeInner{
+      position:relative;
+      min-height: calc(100vh - 62px);
+      display:grid;
+      align-items:center;
+      padding: 22px;
+    }
+    @media (min-width: 980px){
+      .homeInner{ padding: 54px; }
+    }
+
+    .homeCard{
+      max-width: 980px;
+      background: rgba(255,255,255,.80);
+      border: 1px solid var(--line2);
+      border-radius: var(--radius2);
+      box-shadow: var(--shadow2);
+      padding: 22px;
+      display:grid;
+      gap:18px;
+    }
+    @media (min-width: 980px){
+      .homeCard{
+        grid-template-columns: 1.35fr .65fr;
+        gap: 22px;
+        padding: 28px;
+      }
+    }
+
+    .ornateLine{
+      width: min(520px, 100%);
+      height: 16px;
+      opacity:.92;
+    }
+    .homeTitle{
+      font-family: var(--serif);
+      font-size: clamp(34px, 5vw, 56px);
+      letter-spacing:.6px;
+      margin:0;
+      text-shadow: 0 10px 25px rgba(30,20,10,.10);
+    }
+    .homeTitle span{
+      background: linear-gradient(180deg, var(--gold2), var(--gold));
+      -webkit-background-clip:text;
+      background-clip:text;
+      color:transparent;
+    }
+    .homeTag{
+      margin:0;
+      font-size: 15.5px;
+      color: var(--muted);
+      line-height:1.55;
+      max-width: 760px;
+    }
+    .ctaRow{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-top: 4px;
+    }
+    .btn{
+      border:1px solid var(--line);
+      background: linear-gradient(180deg, #ffffff, #f6efe3);
+      color: var(--ink);
+      padding: 11px 16px;
+      border-radius: 999px;
+      font-weight:800;
+      font-size:14px;
+      cursor:pointer;
+      transition: .18s ease;
+      box-shadow: var(--shadow2);
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+    }
+    .btn:hover{ transform: translateY(-1px); }
+    .btn.primary{
+      border-color: rgba(177,138,47,.55);
+      background: linear-gradient(180deg, rgba(210,176,99,.92), rgba(177,138,47,.92));
+      color:#201a10;
+    }
+    .btn.ghost{
+      background: rgba(255,255,255,.75);
+      border-color: var(--line2);
+      color: var(--muted);
+      font-weight:800;
+    }
+
+    .homeMiniGrid{
+      display:grid;
+      gap:12px;
+      align-content:start;
+    }
+    .miniCard{
+      background: rgba(255,255,255,.72);
+      border: 1px solid var(--line2);
+      border-radius: var(--radius);
+      padding: 14px 14px;
+      box-shadow: var(--shadow2);
+    }
+    .miniCard .k{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      font-weight:900;
+      font-size:14px;
+    }
+    .miniCard .k svg{ width:18px;height:18px; color: var(--gold); }
+    .miniCard p{
+      margin:8px 0 0;
+      font-size:13px;
+      color: var(--muted);
+      line-height:1.5;
+    }
+
+    /* Section headings */
+    .section{ margin-top: 22px; }
+    .sectionHeader{
+      display:flex;
+      align-items:flex-end;
+      justify-content:space-between;
+      gap:12px;
+      margin: 18px 0 14px;
+    }
+    .sectionHeader h2{
+      margin:0;
+      font-family: var(--serif);
+      font-size: 28px;
+      letter-spacing:.3px;
+    }
+    .sectionHeader .hint{
+      color: var(--muted);
+      font-weight:700;
+      font-size:13px;
+    }
+
+    /* Process blocks */
+    .processGrid{
+      display:grid;
+      gap:14px;
+    }
+    @media (min-width: 980px){
+      .processGrid{ grid-template-columns: repeat(3, 1fr); }
+    }
+    .processCard{
+      border-radius: var(--radius2);
+      background:
+        radial-gradient(800px 200px at 10% 10%, rgba(210,176,99,.12), transparent 45%),
+        linear-gradient(180deg, rgba(255,255,255,.92), rgba(255,255,255,.78));
+      border: 1px solid var(--line2);
+      box-shadow: var(--shadow2);
+      padding: 18px 18px;
+    }
+    .stepTop{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      margin-bottom: 10px;
+    }
+    .stepNo{
+      font-family: var(--sans);
+      font-weight: 900;
+      letter-spacing: .22em;
+      font-size: 12px;
+      color: rgba(177,138,47,.85);
+      text-transform:uppercase;
+    }
+    .stepBadge{
+      font-size:12px;
+      font-weight:900;
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid var(--line2);
+      color: var(--muted);
+      background: rgba(255,255,255,.75);
+    }
+    .processCard h3{
+      margin: 0 0 10px;
+      font-family: var(--serif);
+      font-size: 19px;
+    }
+    .processCard p{
+      margin:0;
+      color: var(--muted);
+      line-height:1.6;
+      font-size: 13.5px;
+    }
+
+    /* Panel */
+    .panel{
+      border-radius: var(--radius2);
+      background: rgba(255,255,255,.86);
+      border:1px solid var(--line2);
+      box-shadow: var(--shadow);
+      padding: 18px;
+    }
+    .panel h1{
+      margin:0 0 8px;
+      font-family: var(--serif);
+      font-size: 34px;
+    }
+    .panel .lead{
+      margin:0;
+      color: var(--muted);
+      line-height: 1.65;
+      font-size: 15px;
+      max-width: 980px;
+    }
+
+    .bullets{
+      display:grid;
+      gap:10px;
+      margin-top: 14px;
+    }
+    @media (min-width: 980px){
+      .bullets{ grid-template-columns: repeat(3, 1fr); }
+    }
+    .bullet{
+      border-radius: var(--radius);
+      background: rgba(255,255,255,.75);
+      border:1px solid var(--line2);
+      padding: 12px;
+      box-shadow: var(--shadow2);
+      display:flex;
+      gap:10px;
+      align-items:flex-start;
+    }
+    .bullet svg{ width:18px;height:18px; color: var(--gold); margin-top:2px; flex:0 0 auto; }
+    .bullet b{ display:block; margin-bottom:4px; }
+    .bullet span{ color: var(--muted); font-size: 13px; line-height: 1.5; }
+
+    /* Oferta większa */
+    .offerWrap{
+      width: min(1480px, 100%);
+      margin: 0 auto;
+    }
+    .iframeWrap{
+      margin-top: 16px;
+      border-radius: var(--radius2);
+      overflow:hidden;
+      border:1px solid rgba(0,0,0,.08);
+      box-shadow: var(--shadow2);
+      background:#fff;
+    }
+    .iframeWrap iframe{ display:block; }
+    .iframeNote{
+      margin: 10px 0 0;
+      color: var(--muted);
+      font-size: 12.5px;
+    }
+
+    /* O nas dodatkowe sekcje */
+    .split{
+      display:grid;
+      gap:16px;
+      margin-top: 16px;
+      align-items:stretch;
+    }
+    @media (min-width: 980px){
+      .split{ grid-template-columns: 1.05fr .95fr; }
+    }
+    .featurePhoto{
+      border-radius: var(--radius2);
+      overflow:hidden;
+      border:1px solid rgba(0,0,0,.08);
+      box-shadow: var(--shadow2);
+      background: #fff;
+      min-height: 320px;
+      position:relative;
+    }
+    .featurePhoto .img{
+      position:absolute;
+      inset:0;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.10), rgba(0,0,0,.05)),
+        var(--about-feature-bg);
+      background-size: cover;
+      background-position: center;
+    }
+    .featurePhoto .cap{
+      position:absolute;
+      left: 14px;
+      right: 14px;
+      bottom: 14px;
+      background: rgba(255,255,255,.86);
+      border: 1px solid var(--line2);
+      border-radius: 16px;
+      box-shadow: var(--shadow2);
+      padding: 10px 12px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height:1.5;
+    }
+
+    .sectionTitleCenter{
+      text-align:center;
+      margin-top: 20px;
+    }
+    .sectionTitleCenter h2{
+      margin: 0 0 10px;
+      font-family: var(--serif);
+      font-size: 34px;
+      letter-spacing:.3px;
+      color: #9b5b3d;
+    }
+
+    .tiles4{
+      display:grid;
+      gap:14px;
+      margin-top: 12px;
+    }
+    @media (min-width: 980px){
+      .tiles4{ grid-template-columns: repeat(4, 1fr); }
+    }
+    .tileWarm{
+      border-radius: 22px;
+      border: 1px solid rgba(160,135,70,.28);
+      box-shadow: var(--shadow2);
+      background:
+        radial-gradient(900px 240px at 20% 10%, rgba(210,176,99,.18), transparent 60%),
+        linear-gradient(180deg, rgba(176,107,69,.92), rgba(150,82,55,.92));
+      color: rgba(255,255,255,.96);
+      padding: 20px 16px;
+      min-height: 140px;
+      display:grid;
+      place-items:center;
+      text-align:center;
+      font-weight: 900;
+      letter-spacing: .02em;
+      line-height: 1.25;
+    }
+
+    .coopGrid{
+      display:grid;
+      gap:14px;
+      margin-top: 12px;
+    }
+    @media (min-width: 980px){
+      .coopGrid{ grid-template-columns: repeat(3, 1fr); }
+    }
+    .coopCard{
+      position:relative;
+      border-radius: 22px;
+      overflow:hidden;
+      border: 1px solid rgba(0,0,0,.08);
+      box-shadow: var(--shadow2);
+      min-height: 160px;
+      background:
+        radial-gradient(900px 300px at 10% 10%, rgba(210,176,99,.20), transparent 60%),
+        linear-gradient(180deg, rgba(30,22,14,.92), rgba(10,8,6,.92));
+      color:#fff;
+      display:grid;
+      place-items:center;
+      text-align:center;
+      padding: 16px;
+      font-weight: 900;
+    }
+    .coopCard .bg{
+      position:absolute;
+      inset:0;
+      background:
+        linear-gradient(180deg, rgba(0,0,0,.32), rgba(0,0,0,.48));
+      pointer-events:none;
+    }
+    .coopCard .txt{
+      position:relative;
+      font-size: 16px;
+      line-height: 1.25;
+      padding: 10px 12px;
+      border-radius: 16px;
+      background: rgba(0,0,0,.18);
+      border: 1px solid rgba(255,255,255,.14);
+    }
+    .coopCard[data-bg="salon"]{ background-image: var(--home-bg)); background-size:cover; background-position:center; }
+    .coopCard[data-bg="plan"]{ background-image: var(--about-feature-bg)); background-size:cover; background-position:center; }
+    .coopCard[data-bg="gold"]{ background:
+        radial-gradient(900px 300px at 20% 10%, rgba(210,176,99,.22), transparent 60%),
+        linear-gradient(180deg, rgba(35,25,10,.92), rgba(10,8,6,.92)); }
+    .coopCard[data-bg="paper"]{ background:
+        radial-gradient(900px 300px at 10% 10%, rgba(210,176,99,.18), transparent 60%),
+        linear-gradient(180deg, rgba(255,255,255,.20), rgba(0,0,0,.18)); }
+    .coopCard[data-bg="stage"]{ background:
+        radial-gradient(900px 300px at 20% 10%, rgba(176,107,69,.26), transparent 62%),
+        linear-gradient(180deg, rgba(30,22,14,.92), rgba(10,8,6,.92)); }
+    .coopCard[data-bg="classic"]{ background:
+        radial-gradient(900px 300px at 20% 10%, rgba(210,176,99,.18), transparent 60%),
+        linear-gradient(180deg, rgba(75,50,28,.92), rgba(15,10,8,.92)); }
+
+    /* Kontakt */
+    .contactHero{
+      text-align:center;
+      padding: 12px 0 18px;
+    }
+    .contactHero h1{
+      font-family: var(--serif);
+      font-size: 40px;
+      margin: 0 0 8px;
+      color: #9b5b3d;
+      letter-spacing:.3px;
+    }
+    .contactHero p{
+      margin: 0 auto;
+      max-width: 860px;
+      color: var(--muted);
+      line-height: 1.7;
+      font-size: 15px;
+    }
+    .contactInfoRow{
+      display:grid;
+      gap:12px;
+      margin-top: 18px;
+    }
+    @media (min-width: 980px){
+      .contactInfoRow{ grid-template-columns: repeat(3, 1fr); }
+    }
+    .infoCard{
+      background: rgba(255,255,255,.86);
+      border:1px solid var(--line2);
+      border-radius: var(--radius2);
+      box-shadow: var(--shadow2);
+      padding: 14px 14px;
+      display:flex;
+      gap:12px;
+      align-items:flex-start;
+    }
+    .infoCard svg{ width:22px;height:22px; color:#b06b45; flex:0 0 auto; margin-top:2px; }
+    .infoCard b{ display:block; margin-bottom:4px; }
+    .infoCard span{ color: var(--muted); font-size: 13.5px; line-height: 1.5; }
+
+    .formWrap{
+      margin-top: 18px;
+      background: rgba(255,255,255,.92);
+      border:1px solid rgba(0,0,0,.08);
+      border-radius: var(--radius2);
+      box-shadow: var(--shadow);
+      padding: 18px;
+    }
+    .formGrid{
+      display:grid;
+      gap: 14px;
+    }
+    @media (min-width: 980px){
+      .formGrid{ grid-template-columns: 1fr 1fr; }
+      .span2{ grid-column: 1 / -1; }
+    }
+    label{
+      display:block;
+      font-weight:800;
+      font-size: 13px;
+      color: #2b241e;
+      margin-bottom: 6px;
+    }
+    input, textarea, select{
+      width:100%;
+      border-radius: 10px;
+      border:1px solid rgba(0,0,0,.15);
+      padding: 12px 12px;
+      font-size: 14px;
+      outline:none;
+      background: #fff;
+      transition: .18s ease;
+    }
+    textarea{ min-height: 140px; resize: vertical; }
+    input:focus, textarea:focus, select:focus{
+      border-color: rgba(177,138,47,.55);
+      box-shadow: 0 0 0 4px rgba(210,176,99,.18);
+    }
+    .sendRow{
+      display:flex;
+      justify-content:center;
+      margin-top: 14px;
+    }
+    .sendBtn{
+      padding: 12px 22px;
+      border-radius: 8px;
+      background: transparent;
+      border:1px solid #b06b45;
+      color:#b06b45;
+      font-weight:900;
+      cursor:pointer;
+      transition:.18s ease;
+      letter-spacing:.02em;
+    }
+    .sendBtn:hover{
+      background: rgba(176,107,69,.08);
+      transform: translateY(-1px);
+    }
+
+    /* Footer */
+    footer{
+      border-top:1px solid var(--line2);
+      background: rgba(255,255,255,.7);
+      backdrop-filter: blur(10px);
+    }
+    .footerInner{
+      padding: 18px 0;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 14px;
+      flex-wrap:wrap;
+    }
+    .footerPhone{
+      font-weight: 1000;
+      letter-spacing: .02em;
+      color: #2b241e;
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
+    .footerPhone svg{ width:18px;height:18px; color: var(--gold); }
+    .smallNote{ color: var(--muted); font-size: 12.5px; font-weight:700; }
+
+    /* ADMIN */
+    .adminShell{
+      border-radius: var(--radius2);
+      overflow:hidden;
+      border:1px solid rgba(160,135,70,.32);
+      box-shadow: var(--shadow);
+      background:
+        radial-gradient(1200px 700px at 15% -10%, rgba(210,176,99,.14), transparent 60%),
+        radial-gradient(900px 700px at 90% 10%, rgba(177,138,47,.10), transparent 55%),
+        linear-gradient(180deg, #0f0c08 0%, #070604 100%);
+      color:#f2efe9;
+    }
+    .adminTop{ padding: 18px 18px 0; }
+    .adminTitle{
+      margin: 0 0 10px;
+      font-family: var(--serif);
+      font-size: 28px;
+      color: #f7f1e5;
+      letter-spacing:.3px;
+    }
+    .adminGrid{
+      display:grid;
+      gap:16px;
+      padding: 0 18px 18px;
+    }
+    @media (min-width: 980px){
+      .adminGrid{ grid-template-columns: 1.05fr .95fr; }
+    }
+    .adminCard{
+      border-radius: var(--radius2);
+      border: 1px solid rgba(210,176,99,.25);
+      background: rgba(0,0,0,.35);
+      box-shadow: 0 18px 55px rgba(0,0,0,.35);
+      padding: 16px;
+    }
+    .adminLabel{
+      text-transform:uppercase;
+      letter-spacing:.25em;
+      font-weight:900;
+      font-size: 12px;
+      color: rgba(210,176,99,.85);
+      margin: 2px 0 12px;
+    }
+    .adminForm{
+      display:grid;
+      gap:12px;
+    }
+    .adminForm .row2{
+      display:grid;
+      gap:12px;
+    }
+    @media (min-width: 760px){
+      .adminForm .row2{ grid-template-columns: 1fr 1fr; }
+    }
+    .adminForm label{
+      color: rgba(242,239,233,.9);
+      font-weight:900;
+      font-size: 12px;
+      letter-spacing: .08em;
+      text-transform:uppercase;
+    }
+    .adminForm input, .adminForm textarea, .adminForm select{
+      background: rgba(15,12,8,.92);
+      border: 1px solid rgba(210,176,99,.22);
+      color: #f2efe9;
+    }
+    .adminForm input::placeholder, .adminForm textarea::placeholder{
+      color: rgba(242,239,233,.45);
+    }
+    .adminForm input:focus, .adminForm textarea:focus, .adminForm select:focus{
+      border-color: rgba(210,176,99,.55);
+      box-shadow: 0 0 0 4px rgba(210,176,99,.12);
+    }
+    .adminButtons{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-top: 4px;
+    }
+    .adminBtn{
+      border-radius: 999px;
+      border: 1px solid rgba(210,176,99,.35);
+      background: linear-gradient(180deg, rgba(210,176,99,.25), rgba(177,138,47,.18));
+      color: #f2efe9;
+      font-weight: 1000;
+      padding: 12px 16px;
+      cursor:pointer;
+      letter-spacing:.1em;
+      text-transform:uppercase;
+      font-size: 12px;
+      transition:.18s ease;
+    }
+    .adminBtn:hover{ transform: translateY(-1px); }
+    .adminBtn.secondary{
+      border-color: rgba(242,239,233,.18);
+      background: rgba(15,12,8,.60);
+      color: rgba(242,239,233,.9);
+    }
+
+    .previewBox{
+      display:flex;
+      gap:14px;
+      align-items:flex-start;
+      border: 1px dashed rgba(210,176,99,.35);
+      border-radius: 18px;
+      padding: 14px;
+      background: rgba(0,0,0,.25);
+    }
+    .thumb{
+      width:72px;
+      height:72px;
+      border-radius: 14px;
+      border: 1px solid rgba(210,176,99,.25);
+      background:
+        radial-gradient(circle at 30% 25%, rgba(210,176,99,.28), transparent 60%),
+        linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+      display:grid;
+      place-items:center;
+      overflow:hidden;
+      flex:0 0 auto;
+    }
+    .thumb img{ width:100%; height:100%; object-fit:cover; display:block; }
+    .thumb span{
+      color: rgba(242,239,233,.65);
+      font-weight:900;
+      font-size: 12px;
+      text-align:center;
+      padding: 8px;
+    }
+    .previewMeta{
+      display:grid;
+      gap:6px;
+      min-width: 0;
+    }
+    .previewMeta .metaTitle{
+      text-transform:uppercase;
+      letter-spacing:.25em;
+      font-weight: 1000;
+      color: rgba(210,176,99,.85);
+      font-size: 12px;
+      margin-bottom: 2px;
+    }
+    .kv{
+      display:grid;
+      gap:2px;
+      color: rgba(242,239,233,.9);
+      font-size: 13.5px;
+    }
+    .kv b{
+      color: rgba(242,239,233,.85);
+      font-weight: 900;
+    }
+    .adminList{
+      margin-top: 14px;
+      border-top: 1px solid rgba(210,176,99,.18);
+      padding-top: 12px;
+      display:grid;
+      gap:10px;
+    }
+    .adminItem{
+      border-radius: 16px;
+      border: 1px solid rgba(210,176,99,.18);
+      background: rgba(0,0,0,.20);
+      padding: 10px 10px;
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      align-items:center;
+    }
+    .adminItem .left{
+      display:grid;
+      gap:2px;
+      min-width: 0;
+    }
+    .adminItem .left .t{
+      font-weight: 1000;
+      letter-spacing:.03em;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .adminItem .left .s{
+      color: rgba(242,239,233,.72);
+      font-size: 12.5px;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .adminItem button{
+      border-radius: 999px;
+      border: 1px solid rgba(242,239,233,.18);
+      background: rgba(15,12,8,.55);
+      color: rgba(242,239,233,.9);
+      font-weight: 1000;
+      padding: 8px 10px;
+      cursor:pointer;
+      font-size: 12px;
+      transition: .18s ease;
+      flex:0 0 auto;
+    }
+    .adminItem button:hover{ transform: translateY(-1px); }
+
+    /* Modal gate */
+    .modal{
+      position:fixed;
+      inset:0;
+      display:none;
+      place-items:center;
+      z-index:60;
+      background: rgba(10,8,6,.55);
+      backdrop-filter: blur(10px);
+      padding: 18px;
+    }
+    .modal.active{ display:grid; }
+    .modalCard{
+      width:min(560px, 100%);
+      border-radius: 22px;
+      border: 1px solid rgba(210,176,99,.28);
+      background:
+        radial-gradient(900px 300px at 15% 0%, rgba(210,176,99,.12), transparent 55%),
+        linear-gradient(180deg, rgba(255,255,255,.94), rgba(255,255,255,.84));
+      box-shadow: 0 25px 90px rgba(0,0,0,.35);
+      padding: 18px;
+    }
+    .modalCard h3{
+      margin:0 0 6px;
+      font-family: var(--serif);
+      font-size: 22px;
+    }
+    .modalCard p{
+      margin:0 0 12px;
+      color: var(--muted);
+      line-height:1.6;
+      font-size: 13.5px;
+    }
+    .gateRow{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      flex-wrap:wrap;
+    }
+    .gateRow input{
+      flex: 1 1 240px;
+      border-radius: 12px;
+      font-weight: 1000;
+      letter-spacing:.12em;
+    }
+    .gateRow .btn{ padding: 11px 14px; }
+    .gateError{
+      margin-top: 10px;
+      color: #b14d2f;
+      font-weight: 900;
+      display:none;
+      font-size: 13px;
+    }
+    .gateError.active{ display:block; }
+
+    .hrGold{
+      height:1px;
+      background: linear-gradient(90deg, transparent, rgba(177,138,47,.55), transparent);
+      border:0;
+      margin: 16px 0;
+    }
+    .muted{ color: var(--muted); }
+  </style>
+
+  <style>
+    /* Wbudowane obrazy (data url) */
+:root{
+  --home-bg-data: url("./img/salon.jpg");
+  --about-bg-data: url("./img/scenografia.jpg");
+
+  --home-bg: var(--home-bg-data);
+  --about-feature-bg: var(--about-bg-data);
+}
+  </style>
+</head>
+
+<body>
+  <header class="topbar" role="banner">
+    <div class="container">
+      <div class="wrap">
+        <a class="logo" href="#/" data-route="/">
+          <div class="logoMark" aria-hidden="true" title="Meble Z Pałacu">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M4 18h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+              <path d="M7 18v-7a5 5 0 0 1 10 0v7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+              <path d="M9 11h6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="logoText">
+            <div class="brand">Meble Z Pałacu</div>
+            <div class="sub">Wypożyczalnia mebli antycznych</div>
+          </div>
+        </a>
+
+        <nav class="nav" aria-label="Nawigacja">
+          <a href="#/" data-route="/" class="active">Strona główna</a>
+          <a href="#/oferta" data-route="/oferta">Oferta</a>
+          <a href="#/o-nas" data-route="/o-nas">O nas</a>
+          <a href="#/kontakt" data-route="/kontakt">Kontakt</a>
+
+          <button class="admin-trigger" id="adminTrigger" aria-label="Panel admina">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M12 12a4 4 0 1 0-4-4 4 4 0 0 0 4 4Z" stroke="currentColor" stroke-width="1.7"/>
+              <path d="M4 20a8 8 0 0 1 16 0" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+            </svg>
+          </button>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main class="container" role="main">
+    <!-- HOME -->
+    <section class="page active" id="page-home" data-page="/">
+      <div class="homeStage" role="region" aria-label="Strona główna">
+        <div class="homeInner">
+          <div class="homeCard">
+            <div>
+              <svg class="ornateLine" viewBox="0 0 520 28" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <path d="M10 14h160" stroke="rgba(177,138,47,.65)" stroke-width="2" stroke-linecap="round"/>
+                <path d="M350 14h160" stroke="rgba(177,138,47,.65)" stroke-width="2" stroke-linecap="round"/>
+                <path d="M260 6c-12 0-18 6-18 8s6 8 18 8 18-6 18-8-6-8-18-8Z" fill="rgba(210,176,99,.35)" stroke="rgba(177,138,47,.7)" stroke-width="1.6"/>
+                <path d="M232 14c9-10 17-10 28 0" stroke="rgba(177,138,47,.65)" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+                <path d="M260 14c9-10 17-10 28 0" stroke="rgba(177,138,47,.65)" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+              </svg>
+
+              <h1 class="homeTitle"><span>Meble Z Pałacu</span></h1>
+
+              <p class="homeTag">
+                Stylowe fotele, biblioteki, stoliki, konsole, lustra i detale, które tworzą scenografię lepszą niż jakikolwiek filtr.
+                Dla planów filmowych, sesji zdjęciowych, ślubów i nietypowych wydarzeń.
+              </p>
+
+              <div class="ctaRow">
+                <a class="btn primary" href="#/oferta" data-route="/oferta" aria-label="Przejdź do oferty">
+                  Zapytaj o ofertę
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M5 12h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    <path d="M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </a>
+                <a class="btn ghost" href="#/kontakt" data-route="/kontakt" aria-label="Kontakt">
+                  Kontakt
+                </a>
+              </div>
+
+              <div class="smallNote" style="margin-top:10px;">
+                Rzemiosło, proporcje i detale, które podnoszą jakość scenografii.
+              </div>
+            </div>
+
+            <div class="homeMiniGrid" aria-label="Atuty">
+              <div class="miniCard">
+                <div class="k">
+                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M7 20h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    <path d="M8 20V10a4 4 0 0 1 8 0v10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    <path d="M10 11h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                  </svg>
+                  Autentyczne antyki
+                </div>
+                <p>Wyselekcjonowane meble i detale w pałacowym klimacie, gotowe do scenografii.</p>
+              </div>
+
+              <div class="miniCard">
+                <div class="k">
+                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M12 2l3 7 7 .5-5.5 4.3 1.9 7.2L12 17.8 5.6 21l1.9-7.2L2 9.5 9 9l3-7Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                  </svg>
+                  Muzealna jakość
+                </div>
+                <p>Ekskluzywne wykończenia i charakter, który buduje klimat kadru.</p>
+              </div>
+
+              <div class="miniCard">
+                <div class="k">
+                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M3 7h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    <path d="M6 7l1 13h10l1-13" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                    <path d="M9 7V5a3 3 0 0 1 6 0v2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                  </svg>
+                  Prosty proces
+                </div>
+                <p>Wybierasz, wysyłasz zapytanie, odbierasz wybrane pozycje z magazynu.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="sectionHeader">
+          <h2>Prosty proces, muzealna jakość.</h2>
+          <div class="hint">Trzy kroki, przejrzyste zasady.</div>
+        </div>
+
+        <div class="processGrid" aria-label="Schemat działania">
+          <div class="processCard">
+            <div class="stepTop">
+              <div class="stepNo">01 · WYBÓR</div>
+              <div class="stepBadge">Krok 1</div>
+            </div>
+            <h3>Przeglądasz katalog online</h3>
+            <p>
+              Otwierasz zakładkę Oferta, filtrujesz po kategorii i numerze produktu, zapisujesz interesujące pozycje.
+              Wszystko opisane: wymiary, sala, typ mebla.
+            </p>
+          </div>
+
+          <div class="processCard">
+            <div class="stepTop">
+              <div class="stepNo">02 · ZAPYTANIE</div>
+              <div class="stepBadge">Krok 2</div>
+            </div>
+            <h3>Kontakt mailowy lub telefoniczny</h3>
+            <p>
+              Wysyłasz listę numerów produktów lub screeny z galerii. Odpowiadamy z potwierdzeniem dostępności
+              i wyceną na konkretny termin.
+            </p>
+          </div>
+
+          <div class="processCard">
+            <div class="stepTop">
+              <div class="stepNo">03 · REALIZACJA</div>
+              <div class="stepBadge">Krok 3</div>
+            </div>
+            <h3>Realizacja, odbiór wybranych mebli z naszego magazynu</h3>
+            <p>
+              Przygotowujemy meble do odbioru według ustaleń. Odbierasz wybrane pozycje z naszego magazynu
+              i korzystasz z nich w uzgodnionym terminie.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- OFERTA -->
+    <section class="page" id="page-oferta" data-page="/oferta">
+      <div class="offerWrap">
+        <div class="panel">
+          <h1>Oferta</h1>
+          <p class="lead">
+            Wielki wybór: <b>ponad 800 produktów</b> fotele, biblioteki, stoliki, konsole, lustra i detale.
+            Autentyczne antyki o ekskluzywnych wykończeniach. Zbuduj swój koszyk wyborów w katalogu i wyślij nam numery produktów.
+            Wrócimy z dostępnością i wyceną.
+          </p>
+
+          <div class="bullets" aria-label="Najważniejsze informacje">
+            <div class="bullet">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M12 2l3 7 7 .5-5.5 4.3 1.9 7.2L12 17.8 5.6 21l1.9-7.2L2 9.5 9 9l3-7Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+              </svg>
+              <div>
+                <b>Pałacowy efekt</b>
+                <span>Detale, ornamenty, patyna, faktury i proporcje z epoki.</span>
+              </div>
+            </div>
+
+            <div class="bullet">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M20 7l-8 8-4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M6 21h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+              <div>
+                <b>Opisane i uporządkowane</b>
+                <span>Numery, wymiary, kategorie, łatwy wybór zestawu do scenografii.</span>
+              </div>
+            </div>
+
+            <div class="bullet">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M3 11h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <path d="M7 7h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <path d="M7 15h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+              <div>
+                <b>Twój koszyk wyborów</b>
+                <span>Wybierasz pozycje z katalogu i wysyłasz nam listę, my domykamy realizację.</span>
+              </div>
+            </div>
+          </div>
+
+          <hr class="hrGold"/>
+
+          <div class="iframeWrap" aria-label="Galeria katalogu (Airtable)">
+            <iframe class="airtable-embed"
+                    src="https://airtable.com/embed/appaULpFvtmbcR4Sm/shrHZLR4s2HjvcrSj"
+                    frameborder="0"
+                    width="100%"
+                    height="820"
+                    style="background: transparent; border: 1px solid #ccc;"></iframe>
+          </div>
+
+          <p class="iframeNote">
+            Jeśli coś wpadnie w oko, zrób screena lub spisz numer produktu i napisz do nas: <b>kontakt@antykiwypozyczalnia.pl</b>.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- O NAS -->
+    <section class="page" id="page-o-nas" data-page="/o-nas">
+      <div class="panel">
+        <h1>O nas</h1>
+        <p class="lead">
+          <b>Meble Z Pałacu</b> to wypożyczalnia antycznych mebli i detali, które budują spójny klimat wnętrza i scenografii.
+          Kolekcja obejmuje autentyczne elementy wyposażenia, starannie dobrane pod kątem estetyki epoki i efektu na zdjęciach.
+        </p>
+
+        <div class="bullets" style="margin-top:16px">
+          <div class="bullet">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M7 21h10M9 21V8a3 3 0 0 1 6 0v13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M7 10h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            <div>
+              <b>Scenografia i detale</b>
+              <span>Komponujemy zestawy tak, aby wyglądały przekonująco w kadrze i w przestrzeni.</span>
+            </div>
+          </div>
+
+          <div class="bullet">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M12 2l3 7 7 .5-5.5 4.3 1.9 7.2L12 17.8 5.6 21l1.9-7.2L2 9.5 9 9l3-7Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+            </svg>
+            <div>
+              <b>Jakość i selekcja</b>
+              <span>Autentyczne antyki z dbałością o wykończenie, proporcje oraz stan ekspozycyjny.</span>
+            </div>
+          </div>
+
+          <div class="bullet">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M12 2c4.4 0 8 3.6 8 8 0 5.2-8 12-8 12S4 15.2 4 10c0-4.4 3.6-8 8-8Z" stroke="currentColor" stroke-width="2"/>
+              <path d="M12 12a2 2 0 1 0-2-2 2 2 0 0 0 2 2Z" stroke="currentColor" stroke-width="2"/>
+            </svg>
+            <div>
+              <b>Wydarzenia i produkcje</b>
+              <span>Plany filmowe, sesje, śluby i eventy, dobór zestawu zgodnie z koncepcją projektu.</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="split">
+          <div>
+            <hr class="hrGold"/>
+            <p class="muted" style="margin:0; line-height:1.75; font-size:15px;">
+              Doradzamy w doborze stylu, epoki i charakteru wnętrza. Możemy przygotować propozycję zestawu pod konkretną estetykę,
+              a następnie potwierdzić dostępność i wycenę na wskazany termin.
+            </p>
+
+            <div class="sectionTitleCenter">
+              <h2>Oferujemy</h2>
+            </div>
+            <div class="tiles4" aria-label="Oferujemy">
+              <div class="tileWarm">Pomoc w doborze stylu i obiektów</div>
+              <div class="tileWarm">Indywidualne podejście do projektów</div>
+              <div class="tileWarm">Rezerwacje z wyprzedzeniem</div>
+              <div class="tileWarm">Transport na terenie Polski i za granicę</div>
+            </div>
+
+            <div class="sectionTitleCenter" style="margin-top:22px;">
+              <h2>Współpraca</h2>
+            </div>
+            <div class="coopGrid" aria-label="Współpraca">
+              <div class="coopCard" data-bg="plan">
+                <div class="bg"></div>
+                <div class="txt">Reżyserami i producentami filmowymi</div>
+              </div>
+              <div class="coopCard" data-bg="gold">
+                <div class="bg"></div>
+                <div class="txt">Scenografami i art directorami</div>
+              </div>
+              <div class="coopCard" data-bg="stage">
+                <div class="bg"></div>
+                <div class="txt">Teatrami i muzeami</div>
+              </div>
+              <div class="coopCard" data-bg="salon">
+                <div class="bg"></div>
+                <div class="txt">Fotografami i stylistami</div>
+              </div>
+              <div class="coopCard" data-bg="classic">
+                <div class="bg"></div>
+                <div class="txt">Architektami wnętrz i projektantami</div>
+              </div>
+              <div class="coopCard" data-bg="paper">
+                <div class="bg"></div>
+                <div class="txt">Agencjami eventowymi i wedding plannerami</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="featurePhoto" aria-label="Scenografia">
+            <div class="img" aria-hidden="true"></div>
+            <div class="cap">
+              Scenografia w praktyce. Zestaw mebli antycznych przygotowany do realizacji zdjęciowej lub filmowej.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- KONTAKT -->
+    <section class="page" id="page-kontakt" data-page="/kontakt">
+      <div class="contactHero">
+        <h1>Zapraszamy do kontaktu</h1>
+        <p>
+          Skontaktuj się z nami telefonicznie lub mailowo:
+          <b>+48 515 555 555</b>, <b>kontakt@antykiwypozyczalnia.pl</b>. Jeśli któryś z naszych eksponatów przyciągnął uwagę,
+          wypełnij formularz, z przyjemnością udzielimy szczegółowych informacji.
+        </p>
+
+        <div class="contactInfoRow" aria-label="Dane kontaktowe">
+          <div class="infoCard">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M12 2c4.4 0 8 3.6 8 8 0 5.2-8 12-8 12S4 15.2 4 10c0-4.4 3.6-8 8-8Z" stroke="currentColor" stroke-width="2"/>
+              <path d="M12 12a2 2 0 1 0-2-2 2 2 0 0 0 2 2Z" stroke="currentColor" stroke-width="2"/>
+            </svg>
+            <div>
+              <b>Wypożyczalnia antyków</b>
+              <span>ul. Parkowa 1<br/>Zatory 07 217, Polska</span>
+            </div>
+          </div>
+
+          <div class="infoCard">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.3 1.8.6 2.7a2 2 0 0 1-.5 2.1L8 9.6a16 16 0 0 0 6 6l1.1-1.2a2 2 0 0 1 2.1-.5c.9.3 1.8.5 2.7.6A2 2 0 0 1 22 16.9Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+            </svg>
+            <div>
+              <b>Telefon</b>
+              <span>+48 515 555 555<br/>+48 602 222 222</span>
+            </div>
+          </div>
+
+          <div class="infoCard">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M4 4h16v16H4V4Z" stroke="currentColor" stroke-width="2"/>
+              <path d="M4 7l8 6 8-6" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+            </svg>
+            <div>
+              <b>Mail</b>
+              <span>kontakt@antykiwypozyczalnia.pl</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="formWrap" aria-label="Formularz kontaktowy">
+        <form id="contactForm">
+          <div class="formGrid">
+            <div>
+              <label for="cName">Imię</label>
+              <input id="cName" name="name" placeholder="Imię" autocomplete="given-name" />
+            </div>
+
+            <div>
+              <label for="cSurname">Nazwisko</label>
+              <input id="cSurname" name="surname" placeholder="Nazwisko" autocomplete="family-name" />
+            </div>
+
+            <div>
+              <label for="cEmail">Adres email</label>
+              <input id="cEmail" name="email" type="email" placeholder="Email" autocomplete="email" />
+            </div>
+
+            <div>
+              <label for="cPhone">Telefon</label>
+              <input id="cPhone" name="phone" placeholder="Numer telefonu" autocomplete="tel" />
+            </div>
+
+            <div class="span2">
+              <label for="cMsg">Wiadomość</label>
+              <textarea id="cMsg" name="message" placeholder="Wiadomość"></textarea>
+            </div>
+          </div>
+
+          <div class="sendRow">
+            <button class="sendBtn" type="submit">WYŚLIJ ZAPYTANIE</button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- ADMIN -->
+    <section class="page" id="page-admin" data-page="/admin" aria-label="Panel administracyjny">
+      <div class="adminShell">
+        <div class="adminTop">
+          <div class="adminTitle">Panel admin</div>
+        </div>
+
+        <div class="adminGrid">
+          <div class="adminCard">
+            <div class="adminLabel">Dodawanie pozycji</div>
+
+            <div class="adminForm">
+              <div>
+                <label for="aPhoto">Zdjęcie mebla</label>
+                <input id="aPhoto" type="file" accept="image/png,image/jpeg,image/webp" />
+              </div>
+
+              <div class="row2">
+                <div>
+                  <label for="aCode">Numer produktu</label>
+                  <input id="aCode" placeholder="np. A104" />
+                </div>
+
+                <div>
+                  <label for="aRoom">Sala lub przeznaczenie</label>
+                  <input id="aRoom" placeholder="np. salon, biblioteka, plan filmowy" />
+                </div>
+              </div>
+
+              <div class="row2">
+                <div>
+                  <label for="aDims">Wymiary</label>
+                  <input id="aDims" placeholder="np. 90 x 70 x 100 cm" />
+                </div>
+
+                <div>
+                  <label for="aCat">Kategoria</label>
+                  <select id="aCat">
+                    <option value="" selected>Wybierz kategorię</option>
+                    <option>Fotele</option>
+                    <option>Stoły i stoliki</option>
+                    <option>Konsole</option>
+                    <option>Biblioteki</option>
+                    <option>Lustra</option>
+                    <option>Komody i witryny</option>
+                    <option>Detale i dodatki</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label for="aNote">Notatka wewnętrzna</label>
+                <input id="aNote" placeholder="np. delikatny blat, nie stawiać ciężkich elementów dekoracyjnych" />
+              </div>
+
+              <div class="adminButtons">
+                <button class="adminBtn" type="button" id="btnAdd">DODAJ DO KATALOGU</button>
+                <button class="adminBtn secondary" type="button" id="btnClear">WYCZYŚĆ KATALOG</button>
+              </div>
+
+              <div id="adminMsg" class="muted" style="font-size:13px; opacity:.9;"></div>
+
+              <div class="adminList" id="adminList" aria-label="Lista dodanych pozycji"></div>
+            </div>
+          </div>
+
+          <div class="adminCard">
+            <div class="adminLabel">Podgląd pozycji</div>
+
+            <div class="previewBox">
+              <div class="thumb" id="thumb">
+                <span>Podgląd<br/>zdjęcia</span>
+              </div>
+
+              <div class="previewMeta">
+                <div class="metaTitle">Kategoria</div>
+                <div class="kv">
+                  <div><b>Produkt:</b> <span id="pvCode"> </span></div>
+                  <div><b>Sala:</b> <span id="pvRoom"> </span></div>
+                  <div><b>Wymiary:</b> <span id="pvDims"> </span></div>
+                  <div><b>Kategoria:</b> <span id="pvCat"> </span></div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer role="contentinfo">
+    <div class="container">
+      <div class="footerInner">
+        <a class="logo" href="#/" data-route="/">
+          <div class="logoMark" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M4 18h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+              <path d="M7 18v-7a5 5 0 0 1 10 0v7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+              <path d="M9 11h6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="logoText">
+            <div class="brand">Meble Z Pałacu</div>
+            <div class="sub">Wypożyczalnia mebli antycznych</div>
+          </div>
+        </a>
+
+        <div class="footerPhone" aria-label="Kontakt telefoniczny">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.3 1.8.6 2.7a2 2 0 0 1-.5 2.1L8 9.6a16 16 0 0 0 6 6l1.1-1.2a2 2 0 0 1 2.1-.5c.9.3 1.8.5 2.7.6A2 2 0 0 1 22 16.9Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+          </svg>
+          Kontakt: 515 555 555
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ADMIN GATE MODAL -->
+  <div class="modal" id="gateModal" aria-hidden="true">
+    <div class="modalCard" role="dialog" aria-modal="true" aria-label="Bramka admina">
+      <h3>Panel admin</h3>
+      <p>Wpisz kod dostępu, aby przejść dalej.</p>
+      <div class="gateRow">
+        <input id="gateInput" type="password" inputmode="numeric" autocomplete="one-time-code" placeholder="Kod dostępu" />
+        <button class="btn primary" id="gateSubmit" type="button">Wejdź</button>
+        <button class="btn ghost" id="gateClose" type="button">Zamknij</button>
+      </div>
+      <div class="gateError" id="gateError">Nieprawidłowy kod.</div>
+    </div>
+  </div>
+
+  <script>
+    /* Router */
+    const routes = ["/", "/oferta", "/o-nas", "/kontakt", "/admin"];
+    const pages = Array.from(document.querySelectorAll(".page"));
+
+    function normalizeHash(){
+      const raw = (location.hash || "#/").replace("#", "");
+      if(!raw.startsWith("/")) return "/";
+      const path = raw.split("?")[0];
+      return routes.includes(path) ? path : "/";
+    }
+
+    function setActiveNav(path){
+      document.querySelectorAll(".nav a").forEach(a=>{
+        const r = a.getAttribute("data-route");
+        a.classList.toggle("active", r === path);
+      });
+    }
+
+    function showPage(path){
+      pages.forEach(p => p.classList.toggle("active", p.getAttribute("data-page") === path));
+      setActiveNav(path);
+
+      const titleMap = {
+        "/": "Meble Z Pałacu | Wypożyczalnia mebli antycznych",
+        "/oferta": "Oferta | Meble Z Pałacu",
+        "/o-nas": "O nas | Meble Z Pałacu",
+        "/kontakt": "Kontakt | Meble Z Pałacu",
+        "/admin": "Admin | Meble Z Pałacu"
+      };
+      document.title = titleMap[path] || titleMap["/"];
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    window.addEventListener("hashchange", () => {
+      const path = normalizeHash();
+      if(path === "/admin" && !sessionStorage.getItem("admin_ok")){
+        location.hash = "#/";
+        openGate();
+        return;
+      }
+      showPage(path);
+    });
+
+    (function init(){
+      const path = normalizeHash();
+      if(path === "/admin" && !sessionStorage.getItem("admin_ok")){
+        location.hash = "#/";
+        openGate();
+        return;
+      }
+      showPage(path);
+    })();
+
+    /* Formularz kontaktowy */
+    const contactForm = document.getElementById("contactForm");
+    contactForm?.addEventListener("submit", (e)=>{
+      e.preventDefault();
+      const name = document.getElementById("cName").value.trim();
+      const surname = document.getElementById("cSurname").value.trim();
+      const email = document.getElementById("cEmail").value.trim();
+      const phone = document.getElementById("cPhone").value.trim();
+      const msg = document.getElementById("cMsg").value.trim();
+
+      const subject = encodeURIComponent("Zapytanie Meble Z Pałacu");
+      const body = encodeURIComponent(
+        "Imię i nazwisko: " + name + " " + surname + "\n" +
+        "Email: " + email + "\n" +
+        "Telefon: " + phone + "\n\n" +
+        "Wiadomość:\n" + msg + "\n"
+      );
+      window.location.href = "mailto:kontakt@antykiwypozyczalnia.pl?subject=" + subject + "&body=" + body;
+    });
+
+    /* Admin gate kod 1111 */
+    const gateModal = document.getElementById("gateModal");
+    const gateInput = document.getElementById("gateInput");
+    const gateError = document.getElementById("gateError");
+    const adminTrigger = document.getElementById("adminTrigger");
+    const gateSubmit = document.getElementById("gateSubmit");
+    const gateClose = document.getElementById("gateClose");
+
+    function openGate(){
+      gateModal.classList.add("active");
+      gateModal.setAttribute("aria-hidden", "false");
+      gateError.classList.remove("active");
+      gateInput.value = "";
+      setTimeout(()=>gateInput.focus(), 50);
+    }
+    function closeGate(){
+      gateModal.classList.remove("active");
+      gateModal.setAttribute("aria-hidden", "true");
+    }
+    function tryGate(){
+      const code = gateInput.value.trim();
+      if(code === "1111"){
+        sessionStorage.setItem("admin_ok", "1");
+        closeGate();
+        location.hash = "#/admin";
+      }else{
+        gateError.classList.add("active");
+        gateInput.focus();
+      }
+    }
+
+    adminTrigger.addEventListener("click", openGate);
+    gateClose.addEventListener("click", closeGate);
+    gateSubmit.addEventListener("click", tryGate);
+    gateInput.addEventListener("keydown", (e)=>{
+      if(e.key === "Enter") tryGate();
+      if(e.key === "Escape") closeGate();
+    });
+    gateModal.addEventListener("click", (e)=>{
+      if(e.target === gateModal) closeGate();
+    });
+
+    /* Panel admin katalog lokalny */
+    const LS_KEY = "mzpalacu_catalog_v1";
+
+    const aPhoto = document.getElementById("aPhoto");
+    const aCode  = document.getElementById("aCode");
+    const aRoom  = document.getElementById("aRoom");
+    const aDims  = document.getElementById("aDims");
+    const aCat   = document.getElementById("aCat");
+    const aNote  = document.getElementById("aNote");
+
+    const pvCode = document.getElementById("pvCode");
+    const pvRoom = document.getElementById("pvRoom");
+    const pvDims = document.getElementById("pvDims");
+    const pvCat  = document.getElementById("pvCat");
+
+    const thumb  = document.getElementById("thumb");
+    const btnAdd = document.getElementById("btnAdd");
+    const btnClear = document.getElementById("btnClear");
+    const adminMsg = document.getElementById("adminMsg");
+    const adminList = document.getElementById("adminList");
+
+    let currentImageDataUrl = "";
+
+    function setMsg(text, good=true){
+      adminMsg.textContent = text || "";
+      adminMsg.style.color = good ? "rgba(242,239,233,.85)" : "rgba(255,140,110,.95)";
+    }
+
+    function safeText(v){ return (v || "").toString().trim(); }
+
+    function updatePreview(){
+      pvCode.textContent = safeText(aCode.value) || "";
+      pvRoom.textContent = safeText(aRoom.value) || "";
+      pvDims.textContent = safeText(aDims.value) || "";
+      pvCat.textContent  = safeText(aCat.value)  || "";
+    }
+
+    function renderThumb(){
+      thumb.innerHTML = "";
+      if(currentImageDataUrl){
+        const img = document.createElement("img");
+        img.src = currentImageDataUrl;
+        img.alt = "Podgląd zdjęcia mebla";
+        thumb.appendChild(img);
+      }else{
+        const s = document.createElement("span");
+        s.innerHTML = "Podgląd<br/>zdjęcia";
+        thumb.appendChild(s);
+      }
+    }
+
+    function loadCatalog(){
+      try{
+        const raw = localStorage.getItem(LS_KEY);
+        return raw ? JSON.parse(raw) : [];
+      }catch(_){
+        return [];
+      }
+    }
+
+    function saveCatalog(list){
+      localStorage.setItem(LS_KEY, JSON.stringify(list));
+    }
+
+    function renderList(){
+      const list = loadCatalog();
+      adminList.innerHTML = "";
+      if(list.length === 0){
+        const empty = document.createElement("div");
+        empty.className = "muted";
+        empty.style.opacity = ".75";
+        empty.style.fontSize = "13px";
+        empty.textContent = "Brak pozycji w katalogu.";
+        adminList.appendChild(empty);
+        return;
+      }
+
+      list.slice().reverse().forEach((item)=>{
+        const row = document.createElement("div");
+        row.className = "adminItem";
+
+        const left = document.createElement("div");
+        left.className = "left";
+
+        const t = document.createElement("div");
+        t.className = "t";
+        t.textContent = item.code + "  " + item.cat;
+
+        const s = document.createElement("div");
+        s.className = "s";
+        const notePart = item.note ? ("  Notatka: " + item.note) : "";
+        s.textContent = "Sala: " + item.room + "  Wymiary: " + item.dims + notePart;
+
+        left.appendChild(t);
+        left.appendChild(s);
+
+        const del = document.createElement("button");
+        del.type = "button";
+        del.textContent = "Usuń";
+        del.addEventListener("click", ()=>{
+          const fresh = loadCatalog().filter(x => x.id !== item.id);
+          saveCatalog(fresh);
+          renderList();
+          setMsg("Usunięto pozycję.", true);
+        });
+
+        row.appendChild(left);
+        row.appendChild(del);
+        adminList.appendChild(row);
+      });
+    }
+
+    function validate(){
+      if(!currentImageDataUrl) return "Dodaj zdjęcie mebla.";
+      if(!safeText(aCode.value)) return "Uzupełnij numer produktu.";
+      if(!safeText(aRoom.value)) return "Uzupełnij salę lub przeznaczenie.";
+      if(!safeText(aDims.value)) return "Uzupełnij wymiary.";
+      if(!safeText(aCat.value)) return "Wybierz kategorię.";
+      return "";
+    }
+
+    [aCode, aRoom, aDims, aCat].forEach(el => el.addEventListener("input", updatePreview));
+    aCat.addEventListener("change", updatePreview);
+
+    aPhoto.addEventListener("change", ()=>{
+      const file = aPhoto.files?.[0];
+      if(!file){
+        currentImageDataUrl = "";
+        renderThumb();
+        setMsg("", true);
+        return;
+      }
+      const ok = /image\/(png|jpeg|webp)/.test(file.type);
+      if(!ok){
+        currentImageDataUrl = "";
+        renderThumb();
+        setMsg("Obsługiwane formaty: JPG, PNG, WEBP.", false);
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = () => {
+        currentImageDataUrl = String(reader.result || "");
+        renderThumb();
+        setMsg("Zdjęcie dodane.", true);
+      };
+      reader.readAsDataURL(file);
+    });
+
+    btnAdd.addEventListener("click", ()=>{
+      const err = validate();
+      if(err){
+        setMsg(err, false);
+        return;
+      }
+      const item = {
+        id: (crypto?.randomUUID ? crypto.randomUUID() : String(Date.now()) + Math.random().toString(16).slice(2)),
+        img: currentImageDataUrl,
+        code: safeText(aCode.value),
+        room: safeText(aRoom.value),
+        dims: safeText(aDims.value),
+        cat: safeText(aCat.value),
+        note: safeText(aNote.value),
+        createdAt: Date.now()
+      };
+
+      const list = loadCatalog();
+      list.push(item);
+      saveCatalog(list);
+      renderList();
+      setMsg("Dodano do katalogu.", true);
+    });
+
+    btnClear.addEventListener("click", ()=>{
+      const ok = confirm("Czy na pewno wyczyścić katalog");
+      if(!ok) return;
+      localStorage.removeItem(LS_KEY);
+      renderList();
+      setMsg("Katalog wyczyszczony.", true);
+    });
+
+    renderThumb();
+    updatePreview();
+    renderList();
+  </script>
+</body>
+</html>
